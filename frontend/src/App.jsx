@@ -5,6 +5,7 @@ import PredictionResult from './components/PredictionResult';
 import AnalyticsChart from './components/AnalyticsChart';
 import AreaComparison from './components/AreaComparison';
 import AuthForm from './components/AuthForm';
+import PropertyMap from './components/PropertyMap';
 import './App.css';
 
 const App = () => {
@@ -120,6 +121,7 @@ fetchHistory();
 
 <AnalyticsChart />
 <AreaComparison />
+<PropertyMap />
             </main>
             <footer className="app-footer">
                 <p>&copy; 2024 House Price Prediction. All rights reserved.</p>
