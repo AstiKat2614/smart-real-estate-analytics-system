@@ -4,6 +4,7 @@ import PredictionForm from './components/PredictionForm';
 import PredictionResult from './components/PredictionResult';
 import AnalyticsChart from './components/AnalyticsChart';
 import AreaComparison from './components/AreaComparison';
+import AuthForm from './components/AuthForm';
 import './App.css';
 
 const App = () => {
@@ -12,13 +13,26 @@ const App = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [lightMode, setLightMode] = useState(false);
-    useEffect(() => {
-    const savedHistory = localStorage.getItem('predictionHistory');
+    const [user, setUser] = useState(null);
 
-    if (savedHistory) {
-        setHistory(JSON.parse(savedHistory));
+    useEffect(() => {
+    if (user) {
+        fetchHistory();
     }
-}, []);
+    }, [user]);
+
+    const fetchHistory = async () => {
+    try {
+        const response = await axios.get(
+            'http://localhost:5000/history',
+        );
+
+        setHistory(response.data);
+
+    } catch (error) {
+        console.error('Error fetching history:', error);
+    }
+};
 
     const handlePredict = async (inputs) => {
         setLoading(true);
@@ -29,18 +43,8 @@ const App = () => {
 
 setPrice(predicted);
 
-setHistory((prevHistory) => [
-    predicted,
-    ...prevHistory.slice(0, 4)
-]);
+fetchHistory();
 
-localStorage.setItem(
-    'predictionHistory',
-    JSON.stringify([
-        predicted,
-        ...history.slice(0, 4)
-    ])
-);
         } catch (error) {
             console.error("Error fetching prediction:", error);
             setError("An error occurred while fetching the prediction. Please try again.");
@@ -56,6 +60,19 @@ localStorage.setItem(
                 <p>Analyze property trends and predict real estate market value</p>
             </header>
             <main className="app-main">
+                {!user ? (
+    <AuthForm setUser={setUser} />
+) : (
+    <div style={{ marginBottom: '20px' }}>
+        <h2>WELCOME, {user}</h2>
+
+        <button
+            onClick={() => setUser(null)}
+        >
+            LOGOUT
+        </button>
+    </div>
+)}
                 <PredictionForm onPredict={handlePredict} isLoading={loading} />
                 <div
     style={{
@@ -93,10 +110,10 @@ localStorage.setItem(
     ) : (
         <ul>
             {history.map((item, index) => (
-                <li key={index}>
-                    ₹{item.toLocaleString()}
-                </li>
-            ))}
+    <li key={index}>
+        ₹{Number(item.predicted_price).toLocaleString('en-IN')}
+    </li>
+))}
         </ul>
     )}
 </div>

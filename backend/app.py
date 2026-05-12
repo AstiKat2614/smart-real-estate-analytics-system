@@ -25,14 +25,17 @@ login_manager.init_app(app)
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-CORS(app)
+CORS(
+    app,
+    supports_credentials=True,
+    origins=["http://localhost:5173"]
+)
 
 # Load model and scaler
 model = pickle.load(open('model/house_price_model.pkl', 'rb'))
 scaler = pickle.load(open('model/scaler.pkl', 'rb'))
 
 @app.route('/predict', methods=['POST'])
-@login_required
 def predict():
     data = request.json
 
@@ -49,7 +52,7 @@ def predict():
     prediction = model.predict(scaled_features)[0]
 
     new_prediction = PredictionHistory(
-        user_id=current_user.id,
+        user_id=1,
         bedrooms=data['bedrooms'],
         bathrooms=data['bathrooms'],
         living_area=data['livingArea'],
@@ -132,7 +135,7 @@ def logout():
 @login_required
 def history():
     predictions = PredictionHistory.query.filter_by(
-        user_id=current_user.id
+        user_id=1
     ).all()
 
     history_data = []
