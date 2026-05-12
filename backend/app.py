@@ -1,7 +1,9 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from flask_login import LoginManager
 from models import db, User, PredictionHistory
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, logout_user, login_required, current_user
 
 import pickle
 import numpy as np
@@ -19,6 +21,10 @@ db.init_app(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 CORS(app)
 
 # Load model and scaler
@@ -29,7 +35,7 @@ scaler = pickle.load(open('model/scaler.pkl', 'rb'))
 def predict():
     data = request.json
 
-    features = np.array([[
+    features = np.arrayexit()([[
         data['bedrooms'],
         data['bathrooms'],
         data['livingArea'],
@@ -43,6 +49,69 @@ def predict():
 
     return jsonify({
         'predicted_price': prediction * 9
+    })
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+
+    username = data['username']
+    email = data['email']
+    password = data['password']
+
+    existing_user = User.query.filter(
+        (User.username == username) |
+        (User.email == email)
+    ).first()
+
+    if existing_user:
+        return jsonify({
+            'message': 'User already exists'
+        }), 400
+
+    hashed_password = generate_password_hash(password)
+
+    new_user = User(
+        username=username,
+        email=email,
+        password=hashed_password
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({
+        'message': 'User registered successfully'
+    })
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+
+    email = data['email']
+    password = data['password']
+
+    user = User.query.filter_by(email=email).first()
+
+    if user and check_password_hash(user.password, password):
+        login_user(user)
+
+        return jsonify({
+            'message': 'Login successful',
+            'username': user.username
+        })
+
+    return jsonify({
+        'message': 'Invalid credentials'
+    }), 401
+
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+
+    return jsonify({
+        'message': 'Logged out successfully'
     })
 
 if __name__ == '__main__':
