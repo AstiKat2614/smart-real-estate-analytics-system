@@ -32,10 +32,11 @@ model = pickle.load(open('model/house_price_model.pkl', 'rb'))
 scaler = pickle.load(open('model/scaler.pkl', 'rb'))
 
 @app.route('/predict', methods=['POST'])
+@login_required
 def predict():
     data = request.json
 
-    features = np.arrayexit()([[
+    features = np.array([[
         data['bedrooms'],
         data['bathrooms'],
         data['livingArea'],
@@ -47,8 +48,21 @@ def predict():
 
     prediction = model.predict(scaled_features)[0]
 
+    new_prediction = PredictionHistory(
+        user_id=current_user.id,
+        bedrooms=data['bedrooms'],
+        bathrooms=data['bathrooms'],
+        living_area=data['livingArea'],
+        condition=data['condition'],
+        schools_nearby=data['schoolsNearby'],
+        predicted_price=float(prediction * 9)
+    )
+
+    db.session.add(new_prediction)
+    db.session.commit()
+
     return jsonify({
-        'predicted_price': prediction * 9
+        'predicted_price': float(prediction * 9)
     })
 
 @app.route('/register', methods=['POST'])
@@ -113,6 +127,28 @@ def logout():
     return jsonify({
         'message': 'Logged out successfully'
     })
+
+@app.route('/history', methods=['GET'])
+@login_required
+def history():
+    predictions = PredictionHistory.query.filter_by(
+        user_id=current_user.id
+    ).all()
+
+    history_data = []
+
+    for prediction in predictions:
+        history_data.append({
+            'bedrooms': prediction.bedrooms,
+            'bathrooms': prediction.bathrooms,
+            'living_area': prediction.living_area,
+            'condition': prediction.condition,
+            'schools_nearby': prediction.schools_nearby,
+            'predicted_price': prediction.predicted_price,
+            'timestamp': prediction.timestamp
+        })
+
+    return jsonify(history_data)
 
 if __name__ == '__main__':
     with app.app_context():
