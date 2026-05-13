@@ -11,16 +11,28 @@ import './App.css';
 const App = () => {
     const [price, setPrice] = useState(null);
     const [history, setHistory] = useState([]);
+
+    const prices = history.map(item => Number(item.predicted_price));
+
+    const averagePrice =
+        prices.length > 0
+            ? prices.reduce((a, b) => a + b, 0) / prices.length
+            : 0;
+
+    const maxPrice =
+        prices.length > 0 ? Math.max(...prices) : 0;
+
+    const minPrice =
+        prices.length > 0 ? Math.min(...prices) : 0;
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [lightMode, setLightMode] = useState(false);
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-    if (user) {
-        fetchHistory();
-    }
-    }, [user]);
+    fetchHistory();
+    }, []);
 
     const fetchHistory = async () => {
     try {
@@ -119,7 +131,28 @@ fetchHistory();
     )}
 </div>
 
-<AnalyticsChart />
+<AnalyticsChart history={history} />
+<div className="analytics-summary">
+    <div className="analytics-card">
+        <h3>Total Predictions</h3>
+        <p>{history.length}</p>
+    </div>
+
+    <div className="analytics-card">
+        <h3>Average Price</h3>
+        <p>₹{averagePrice.toLocaleString('en-IN')}</p>
+    </div>
+
+    <div className="analytics-card">
+        <h3>Highest Price</h3>
+        <p>₹{maxPrice.toLocaleString('en-IN')}</p>
+    </div>
+
+    <div className="analytics-card">
+        <h3>Lowest Price</h3>
+        <p>₹{minPrice.toLocaleString('en-IN')}</p>
+    </div>
+</div>
 <AreaComparison />
 <PropertyMap />
             </main>

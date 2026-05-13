@@ -132,7 +132,6 @@ def logout():
     })
 
 @app.route('/history', methods=['GET'])
-@login_required
 def history():
     predictions = PredictionHistory.query.filter_by(
         user_id=1

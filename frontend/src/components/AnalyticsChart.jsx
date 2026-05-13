@@ -9,15 +9,13 @@ import {
     ResponsiveContainer
 } from 'recharts';
 
-const data = [
-    { area: '1 BHK', price: 2500000 },
-    { area: '2 BHK', price: 4500000 },
-    { area: '3 BHK', price: 7000000 },
-    { area: '4 BHK', price: 12000000 },
-    { area: 'Luxury', price: 25000000 },
-];
+const AnalyticsChart = ({ history }) => {
 
-const AnalyticsChart = () => {
+    const chartData = history.map((item, index) => ({
+    name: `Prediction ${index + 1}`,
+    price: Number(item.predicted_price)
+    }));
+
     return (
         <div style={{
             width: '95%',
@@ -40,16 +38,18 @@ const AnalyticsChart = () => {
 
             <ResponsiveContainer width="100%" height="80%">
                 <LineChart
-    data={data}
+    data={chartData}
     margin={{ top: 10, right: 30, left: 40, bottom: 10 }}
 >
                     <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                    <XAxis dataKey="area" stroke="#fff" />
+                    <XAxis dataKey="name" stroke="#fff" />
                     <YAxis
     stroke="#fff"
-    tickFormatter={(value) => `${value / 1000000}M`}
+    tickFormatter={(value) => `₹${Number(value).toLocaleString('en-IN')}`}
                     />
-                    <Tooltip formatter={(value) => `${value / 1000000}M`} />
+                    <Tooltip formatter={(value) =>
+    `₹${Number(value).toLocaleString('en-IN')}`
+} />
                     <Line
                         type="monotone"
                         dataKey="price"

@@ -176,6 +176,33 @@ body {
     color: #333 !important;
 }
 
+.analytics-summary {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.analytics-card {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 12px;
+    min-width: 180px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+}
+
+.analytics-card h3 {
+    margin-bottom: 10px;
+    color: #00ffff;
+}
+
+.analytics-card p {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
 @keyframes fadeInDown {
   from {
     opacity: 0;
