@@ -35,23 +35,22 @@ const App = () => {
     }, []);
 
     const fetchHistory = async () => {
-    try {
-        const response = await axios.get(
-            'http://localhost:5000/history',
-        );
-
-        setHistory(response.data);
-
-    } catch (error) {
-        console.error('Error fetching history:', error);
-    }
-};
+        try {
+            const response = await axios.get(
+                'http://localhost:5000/history',
+                { withCredentials: true }
+            );
+            setHistory(response.data);
+        } catch (error) {
+            console.error('Error fetching history:', error);
+        }
+    };
 
     const handlePredict = async (inputs) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.post('http://localhost:5000/predict', inputs);
+            const response = await axios.post('http://localhost:5000/predict', inputs, { withCredentials: true });
             const predicted = response.data.predicted_price;
 
 setPrice(predicted);

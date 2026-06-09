@@ -33,6 +33,7 @@ const AuthForm = ({ setUser }) => {
             const response = await axios.post(
                 `http://localhost:5000/${endpoint}`,
                 payload,
+                { withCredentials: true }
             );
 
             alert(response.data.message);

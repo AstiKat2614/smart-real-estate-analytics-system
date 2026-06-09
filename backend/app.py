@@ -36,6 +36,7 @@ model = pickle.load(open('model/house_price_model.pkl', 'rb'))
 scaler = pickle.load(open('model/scaler.pkl', 'rb'))
 
 @app.route('/predict', methods=['POST'])
+@login_required
 def predict():
     data = request.json
 
@@ -52,7 +53,7 @@ def predict():
     prediction = model.predict(scaled_features)[0]
 
     new_prediction = PredictionHistory(
-        user_id=1,
+        user_id=current_user.id,
         bedrooms=data['bedrooms'],
         bathrooms=data['bathrooms'],
         living_area=data['livingArea'],
@@ -132,9 +133,10 @@ def logout():
     })
 
 @app.route('/history', methods=['GET'])
+@login_required
 def history():
     predictions = PredictionHistory.query.filter_by(
-        user_id=1
+        user_id=current_user.id
     ).all()
 
     history_data = []
