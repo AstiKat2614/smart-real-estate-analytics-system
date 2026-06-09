@@ -111,6 +111,18 @@
     cursor: not-allowed;
 }
 
+.light-mode .prediction-form {
+    background: #ffffff;
+    color: #121212;
+}
+.light-mode .submit-button {
+    background: #006400;
+    box-shadow: 0 0 10px rgba(0,100,0,0.4);
+}
+.light-mode input[type='range'] {
+    accent-color: #006400;
+}
+
 @keyframes neonPulse {
   0% {
     box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color);
@@ -122,3 +134,4 @@
     box-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color);
   }
 }
+

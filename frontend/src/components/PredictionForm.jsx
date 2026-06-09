@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PredictionForm.css';
 
-const PredictionForm = ({ onPredict, isLoading }) => {
+const PredictionForm = ({ onPredict, isLoading, lightMode }) => {
     const [inputs, setInputs] = useState({
         bedrooms: 3,
         bathrooms: 2,
@@ -37,7 +37,11 @@ const PredictionForm = ({ onPredict, isLoading }) => {
     };
 
     return (
-        <form className="prediction-form" onSubmit={handleSubmit}>
+        <form
+            className="prediction-form"
+            onSubmit={handleSubmit}
+            style={{ background: lightMode ? '#ffffff' : '', color: lightMode ? '#121212' : '' }}
+        >
             <div className="form-group">
                 <label htmlFor="bedrooms">Bedrooms:</label>
                 <input
@@ -49,6 +53,7 @@ const PredictionForm = ({ onPredict, isLoading }) => {
                     min="1"
                     max="10"
                     required
+                    style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />
             </div>
             <div className="form-group">
@@ -63,6 +68,7 @@ const PredictionForm = ({ onPredict, isLoading }) => {
                     max="10"
                     step="0.5"
                     required
+                    style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />
             </div>
             <div className="form-group">
@@ -76,6 +82,7 @@ const PredictionForm = ({ onPredict, isLoading }) => {
                     min="500"
                     max="10000"
                     required
+                    style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />
             </div>
             <div className="form-group">
@@ -89,6 +96,7 @@ const PredictionForm = ({ onPredict, isLoading }) => {
                     min="1"
                     max="5"
                     required
+                    style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />
                 <div className="range-labels">
                     <span>Poor</span>
@@ -107,6 +115,7 @@ const PredictionForm = ({ onPredict, isLoading }) => {
                     min="0"
                     max="10"
                     required
+                    style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />
             </div>
             <button type="submit" className='submit-button' disabled={isLoading || !isButtonEnabled}>

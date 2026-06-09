@@ -23,20 +23,20 @@ const areaData = [
     }
 ];
 
-const AreaComparison = () => {
+const AreaComparison = ({ lightMode }) => {
     return (
         <div style={{
             marginTop: '40px',
-            background: '#111',
+            background: lightMode ? '#ffffff' : '#111',
             padding: '20px',
             borderRadius: '15px',
-            boxShadow: '0 0 20px rgba(255,20,147,0.3)'
+            boxShadow: lightMode ? '0 0 20px rgba(0,100,0,0.15)' : '0 0 20px rgba(255,20,147,0.3)'
         }}>
             <h2 style={{
-                color: '#ff1493',
+                color: lightMode ? '#006400' : '#ff1493',
                 textAlign: 'center',
                 marginBottom: '20px',
-                textShadow: '0 0 10px #ff1493'
+                textShadow: lightMode ? '0 0 8px rgba(0,100,0,0.3)' : '0 0 10px #ff1493'
             }}>
                 NEARBY AREA COMPARISON
             </h2>
@@ -44,14 +44,14 @@ const AreaComparison = () => {
             <table style={{
                 width: '100%',
                 borderCollapse: 'collapse',
-                color: 'white',
+                color: lightMode ? '#121212' : 'white',
                 textAlign: 'center'
             }}>
                 <thead>
                     <tr>
-                        <th style={{ padding: '12px', color: '#00ffff' }}>Area</th>
-                        <th style={{ padding: '12px', color: '#00ffff' }}>Average Price</th>
-                        <th style={{ padding: '12px', color: '#00ffff' }}>Market Trend</th>
+                        <th style={{ padding: '12px', color: lightMode ? '#006400' : '#00ffff' }}>Area</th>
+                        <th style={{ padding: '12px', color: lightMode ? '#006400' : '#00ffff' }}>Average Price</th>
+                        <th style={{ padding: '12px', color: lightMode ? '#006400' : '#00ffff' }}>Market Trend</th>
                     </tr>
                 </thead>
 

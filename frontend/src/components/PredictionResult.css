@@ -104,3 +104,15 @@
     background: #ff4db8;
     transform: scale(1.05);
 }
+
+.light-mode .prediction-result {
+    background: #ffffff;
+    color: #121212;
+}
+.light-mode .prediction-result h2,
+.light-mode .prediction-result h3 {
+    color: #006400;
+}
+.light-mode .price {
+    color: #8b0000;
+}
