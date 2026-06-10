@@ -2,57 +2,59 @@ import React from 'react';
 import jsPDF from 'jspdf';
 import './PredictionResult.css';
 
-const PredictionResult = ({ price, isLoading }) => {
+const PredictionResult = ({ price, isLoading, inputs, user }) => {
 
-    let category = "";
-    let insight = "";
-    let recommendation = "";
-    
     const downloadPDF = () => {
+        const doc = new jsPDF();
+        const priceInLakhs = price.toFixed(2);
+        const priceInRupees = (price * 100000).toLocaleString('en-IN');
+        const date = new Date().toLocaleDateString('en-IN');
 
-    const doc = new jsPDF();
+        doc.setFontSize(20);
+        doc.setFont('helvetica', 'bold');
+        doc.text('SMART REAL ESTATE ANALYSIS', 20, 20);
 
-    doc.setFontSize(22);
-    doc.text("AI Real Estate Prediction Report", 20, 20);
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Property Prediction Report', 20, 30);
 
-    doc.setFontSize(16);
-    doc.text(`Predicted Price: Rs.${price?.toLocaleString()}`, 20, 50);
+        doc.setLineWidth(0.5);
+        doc.line(20, 35, 190, 35);
 
-    doc.text(`Property Category: ${category}`, 20, 70);
+        doc.setFontSize(11);
+        doc.text(`Date: ${date}`, 20, 45);
+        doc.text(`Prepared for: ${user}`, 20, 53);
 
-    doc.text("AI Insights:", 20, 90);
-    doc.text(insight, 20, 100);
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Property Details:', 20, 68);
 
-    doc.text("Investment Recommendation:", 20, 130);
-    doc.text(recommendation, 20, 140);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(11);
+        doc.text(`BHK: ${inputs.bhk}`, 20, 80);
+        doc.text(`Square Footage: ${inputs.sqft} sqft`, 20, 90);
+        doc.text(`Bathrooms: ${inputs.bath}`, 20, 100);
 
-    doc.save("Property_Report.pdf");
-};
+        doc.line(20, 108, 190, 108);
 
-    if (price) {
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.text('Predicted Price:', 20, 120);
+        doc.setFontSize(14);
+        doc.text(`Rs.${priceInLakhs} Lakhs`, 20, 132);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`(Rs.${priceInRupees})`, 20, 142);
 
-        if (price < 5000000) {
-            category = "Budget Property";
-        } else if (price < 10000000) {
-            category = "Mid-Range Property";
-        } else if (price < 20000000) {
-            category = "Premium Property";
-        } else {
-            category = "Luxury Property";
-        }
+        doc.line(20, 150, 190, 150);
 
-        if (price > 15000000) {
-            insight = "High-value property with strong appreciation potential.";
-        } else {
-            insight = "Suitable for stable long-term residential investment.";
-        }
+        doc.setFontSize(9);
+        doc.setTextColor(100);
+        doc.text('Note: Prediction based on Bangalore housing market data.', 20, 160);
+        doc.text('This is an estimate only and should not be used as financial advice.', 20, 168);
 
-        if (price < 10000000) {
-            recommendation = "Good investment opportunity for mid-range buyers.";
-        } else {
-            recommendation = "Recommended for premium real estate investors.";
-        }
-    }
+        doc.save('Property_Report.pdf');
+    };
 
     return (
         <div className="prediction-result">
@@ -62,7 +64,7 @@ const PredictionResult = ({ price, isLoading }) => {
                 <p>Calculating...</p>
             ) : price ? (
                 <>
-                    <p className="price">₹{price.toLocaleString()}</p>
+                    <p className="price">₹{price.toFixed(2)} Lakhs</p>
                     <button
     onClick={downloadPDF}
     className="download-btn"
@@ -70,18 +72,6 @@ const PredictionResult = ({ price, isLoading }) => {
     DOWNLOAD REPORT
 </button>
 
-                    <div className="ai-section">
-
-                        <h3>PROPERTY CATEGORY</h3>
-                        <p>{category}</p>
-
-                        <h3>AI INSIGHTS</h3>
-                        <p>{insight}</p>
-
-                        <h3>INVESTMENT RECOMMENDATION</h3>
-                        <p>{recommendation}</p>
-
-                    </div>
                 </>
             ) : (
                 <p>Submit the form to see the predicted price</p>

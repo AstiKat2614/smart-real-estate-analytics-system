@@ -3,11 +3,9 @@ import './PredictionForm.css';
 
 const PredictionForm = ({ onPredict, isLoading, lightMode }) => {
     const [inputs, setInputs] = useState({
-        bedrooms: 3,
-        bathrooms: 2,
-        livingArea: 2000,
-        condition: 3,
-        schoolsNearby: 2,
+        bhk: 2,
+        sqft: 1200,
+        bath: 2,
     });
 
     const [isButtonEnabled, setIsButtonEnabled] = useState(false);
@@ -27,7 +25,7 @@ const PredictionForm = ({ onPredict, isLoading, lightMode }) => {
         const { name, value } = e.target;
         setInputs(prevInputs => ({
             ...prevInputs,
-            [name]: name === 'condition' ? parseInt(value) : parseFloat(value)
+            [name]: parseFloat(value)
         }));
     };
 
@@ -43,77 +41,43 @@ const PredictionForm = ({ onPredict, isLoading, lightMode }) => {
             style={{ background: lightMode ? '#ffffff' : '', color: lightMode ? '#121212' : '' }}
         >
             <div className="form-group">
-                <label htmlFor="bedrooms">Bedrooms:</label>
+                <label htmlFor="bhk">BHK (Bedrooms):</label>
                 <input
                     type="number"
-                    id="bedrooms"
-                    name="bedrooms"
-                    value={inputs.bedrooms}
+                    id="bhk"
+                    name="bhk"
+                    value={inputs.bhk}
                     onChange={handleChange}
                     min="1"
-                    max="10"
+                    max="9"
                     required
                     style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="bathrooms">Bathrooms:</label>
+                <label htmlFor="sqft">Square Footage (sq ft):</label>
                 <input
                     type="number"
-                    id="bathrooms"
-                    name="bathrooms"
-                    value={inputs.bathrooms}
+                    id="sqft"
+                    name="sqft"
+                    value={inputs.sqft}
                     onChange={handleChange}
-                    min="1"
-                    max="10"
-                    step="0.5"
-                    required
-                    style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="livingArea">Living Area (sq ft):</label>
-                <input
-                    type="number"
-                    id="livingArea"
-                    name="livingArea"
-                    value={inputs.livingArea}
-                    onChange={handleChange}
-                    min="500"
+                    min="300"
                     max="10000"
                     required
                     style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="condition">Condition:</label>
-                <input
-                    type="range"
-                    id="condition"
-                    name="condition"
-                    value={inputs.condition}
-                    onChange={handleChange}
-                    min="1"
-                    max="5"
-                    required
-                    style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
-                />
-                <div className="range-labels">
-                    <span>Poor</span>
-                    <span>Average</span>
-                    <span>Excellent</span>
-                </div>
-            </div>
-            <div className="form-group">
-                <label htmlFor="schoolsNearby">Schools Nearby:</label>
+                <label htmlFor="bath">Bathrooms:</label>
                 <input
                     type="number"
-                    id="schoolsNearby"
-                    name="schoolsNearby"
-                    value={inputs.schoolsNearby}
+                    id="bath"
+                    name="bath"
+                    value={inputs.bath}
                     onChange={handleChange}
-                    min="0"
-                    max="10"
+                    min="1"
+                    max="9"
                     required
                     style={{ background: lightMode ? '#f0f0f0' : '', color: lightMode ? '#121212' : '#ffffff', borderColor: lightMode ? '#006400' : '' }}
                 />

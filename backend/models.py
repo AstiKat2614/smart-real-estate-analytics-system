@@ -15,11 +15,9 @@ class PredictionHistory(db.Model):
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
-    bedrooms = db.Column(db.Integer)
-    bathrooms = db.Column(db.Integer)
-    living_area = db.Column(db.Float)
-    condition = db.Column(db.Integer)
-    schools_nearby = db.Column(db.Integer)
+    bhk = db.Column(db.Integer)
+    sqft = db.Column(db.Float)
+    bath = db.Column(db.Integer)
 
     predicted_price = db.Column(db.Float)
 

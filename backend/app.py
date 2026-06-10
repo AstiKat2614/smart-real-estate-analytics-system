@@ -41,11 +41,9 @@ def predict():
     data = request.json
 
     features = np.array([[
-        data['bedrooms'],
-        data['bathrooms'],
-        data['livingArea'],
-        data['condition'],
-        data['schoolsNearby']
+        data['bhk'],
+        data['sqft'],
+        data['bath']
     ]])
 
     scaled_features = scaler.transform(features)
@@ -54,19 +52,17 @@ def predict():
 
     new_prediction = PredictionHistory(
         user_id=current_user.id,
-        bedrooms=data['bedrooms'],
-        bathrooms=data['bathrooms'],
-        living_area=data['livingArea'],
-        condition=data['condition'],
-        schools_nearby=data['schoolsNearby'],
-        predicted_price=float(prediction * 9)
+        bhk=data['bhk'],
+        sqft=data['sqft'],
+        bath=data['bath'],
+        predicted_price=float(prediction)
     )
 
     db.session.add(new_prediction)
     db.session.commit()
 
     return jsonify({
-        'predicted_price': float(prediction * 9)
+        'predicted_price': float(prediction)
     })
 
 @app.route('/register', methods=['POST'])
@@ -143,16 +139,21 @@ def history():
 
     for prediction in predictions:
         history_data.append({
-            'bedrooms': prediction.bedrooms,
-            'bathrooms': prediction.bathrooms,
-            'living_area': prediction.living_area,
-            'condition': prediction.condition,
-            'schools_nearby': prediction.schools_nearby,
+            'bhk': prediction.bhk,
+            'sqft': prediction.sqft,
+            'bath': prediction.bath,
             'predicted_price': prediction.predicted_price,
             'timestamp': prediction.timestamp
         })
 
     return jsonify(history_data)
+
+@app.route('/history/clear', methods=['DELETE'])
+@login_required
+def clear_history():
+    PredictionHistory.query.filter_by(user_id=current_user.id).delete()
+    db.session.commit()
+    return jsonify({'message': 'History cleared successfully'})
 
 if __name__ == '__main__':
     with app.app_context():

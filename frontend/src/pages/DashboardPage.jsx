@@ -8,6 +8,8 @@ import AnalyticsChart from '../components/AnalyticsChart';
 const DashboardPage = ({ user, setUser, lightMode, setLightMode }) => {
     const navigate = useNavigate();
     const [price, setPrice] = useState(null);
+    const [inputs, setInputs] = useState({ bhk: 2, sqft: 1200, bath: 2 });
+    const [lastInputs, setLastInputs] = useState({ bhk: 0, sqft: 0, bath: 0 });
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -36,23 +38,35 @@ const DashboardPage = ({ user, setUser, lightMode, setLightMode }) => {
         fetchHistory();
     }, []);
 
-    const handlePredict = async (inputs) => {
+    const handlePredict = async (formInputs) => {
+        setInputs(formInputs);
         setLoading(true);
         setError(null);
 
         try {
             const response = await axios.post(
                 'http://localhost:5000/predict',
-                inputs,
+                formInputs,
                 { withCredentials: true }
             );
             setPrice(response.data.predicted_price);
+            setLastInputs(formInputs);
             await fetchHistory();
         } catch (err) {
             setError('Prediction failed. Please try again.');
             console.error(err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const clearHistory = async () => {
+        try {
+            await axios.delete('http://localhost:5000/history/clear', { withCredentials: true });
+            setHistory([]);
+            setPrice(null);
+        } catch (err) {
+            console.error('Error clearing history:', err);
         }
     };
 
@@ -171,7 +185,7 @@ const DashboardPage = ({ user, setUser, lightMode, setLightMode }) => {
                                 boxShadow: `0 0 28px ${glowColor}`
                             }}
                         >
-                            <PredictionResult price={price} isLoading={loading} lightMode={lightMode} />
+                            <PredictionResult price={price} isLoading={loading} lightMode={lightMode} inputs={lastInputs} user={user} />
                         </div>
 
                         <section
@@ -183,9 +197,25 @@ const DashboardPage = ({ user, setUser, lightMode, setLightMode }) => {
                                 boxShadow: `0 0 28px ${glowColor}`
                             }}
                         >
-                            <h2 style={{ marginTop: 0, color: accentColor }}>
-                                PREDICTION HISTORY
-                            </h2>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                <h2 style={{ margin: 0, color: accentColor }}>
+                                    PREDICTION HISTORY
+                                </h2>
+                                <button
+                                    onClick={clearHistory}
+                                    style={{
+                                        border: `1px solid ${accentColor}`,
+                                        background: 'transparent',
+                                        color: accentColor,
+                                        padding: '8px 16px',
+                                        borderRadius: '999px',
+                                        cursor: 'pointer',
+                                        fontWeight: 700
+                                    }}
+                                >
+                                    CLEAR HISTORY
+                                </button>
+                            </div>
                             {error && (
                                 <p style={{ color: '#ff4d4d' }}>{error}</p>
                             )}
@@ -197,7 +227,7 @@ const DashboardPage = ({ user, setUser, lightMode, setLightMode }) => {
                                 <ul style={{ paddingLeft: '20px', margin: '0' }}>
                                     {history.map((item, index) => (
                                         <li key={index} style={{ marginBottom: '10px' }}>
-                                            ₹{Number(item.predicted_price).toLocaleString('en-IN')}
+                                            ₹{Number(item.predicted_price).toFixed(2)} Lakhs
                                         </li>
                                     ))}
                                 </ul>
