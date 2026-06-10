@@ -1,152 +1,117 @@
+﻿# Smart Real Estate Analytics System
 
-# House Price Prediction Project
+A full-stack AI-powered real estate price prediction platform
+built for the Bangalore housing market.
 
-This project is a **House Price Prediction Application** developed for a **final year project**. It uses **machine learning** to predict house prices based on user input. The application has a **React.js frontend** and a **Flask backend**, which uses a pre-trained machine learning model.
+## Tech Stack
 
----
+**Frontend:** React.js (Vite), React Router, Recharts, Leaflet.js
+**Backend:** Flask, SQLAlchemy, Flask-Login
+**ML Model:** Gradient Boosting Regressor (scikit-learn)
+**Database:** SQLite
+**Dataset:** Bengaluru House Price Data (Kaggle, 13,320 records)
 
 ## Features
 
-- Predict house prices based on input features such as bedrooms, bathrooms, and house condition.
-- Modern and responsive user interface built with React.js.
-- Scalable Flask API that serves predictions from a pre-trained model.
-- Easily deployable on localhost for testing and demonstrations.
+- User authentication (register/login/logout)
+- AI-powered property price prediction in lakhs INR
+- Interactive Bangalore map with location-based price estimates
+- Prediction history per user
+- Property analytics chart
+- Nearby area comparison table
+- PDF report generation
+- Light/dark mode across all screens
 
----
+## Dataset
+
+The model was trained using the Bengaluru House Price Data from Kaggle
+containing 13,320 records of real Bangalore property listings.
+
+**Features Used:**
+- **BHK** — Number of bedrooms
+- **Square Footage** — Total living area in sq ft
+- **Bathrooms** — Number of bathrooms
+
+**Target Variable:**
+- **Price** — Property price in lakhs INR
+
+**Data Preprocessing:**
+- Handled range values in square footage (e.g. "1000-1200")
+- Removed outliers (sqft < 300, price > 500 lakhs, bath > 9)
+- Feature scaling using StandardScaler to normalise inputs
+
+## ML Model
+
+**Selected Model: Gradient Boosting Regressor**
+- `n_estimators=100` — 100 boosting stages
+- `random_state=42` — Ensures reproducibility
+
+**Why Gradient Boosting:**
+- Handles non-linear relationships well
+- Resistant to overfitting when tuned properly
+- Outperformed all other tested models on this dataset
+
+## Model Comparison
+
+| Model | R² Score | MAE (Lakhs) | RMSE | MAPE |
+|---|---|---|---|---|
+| Linear Regression | 0.4179 | 34.19 | 58.56 | 38.5% |
+| Decision Tree | 0.5268 | 29.61 | 52.80 | 30.2% |
+| Random Forest | 0.6195 | 27.75 | 47.34 | 28.8% |
+| **Gradient Boosting** | **0.6492** | **27.63** | **45.46** | **29.4%** |
+| XGBoost | 0.6330 | 27.71 | 46.50 | 28.9% |
+
+The trained model and scaler are serialised using pickle and saved
+as `house_price_model.pkl` and `scaler.pkl` respectively.
 
 ## Project Structure
 
-### Backend
-- **`model/`**: Contains the trained machine learning model (`house_price_model.pkl`) and the scaler (`scaler.pkl`).
-- **`notebook/`**: Jupyter notebooks used for training the machine learning model.
-- **`app.py`**: Flask application that serves as the API.
-- **`requirements.txt`**: List of dependencies needed for the backend.
-
-### Frontend
-- **`public/`**: Public assets for the React application.
-- **`src/`**: Source files for the React application.
-  - **`App.js`**: Main component handling the UI.
-  - **`components/`**: Reusable components.
-- **`package.json`**: Configuration file listing dependencies and scripts for the frontend.
-
----
-
-## How to Run the Project
-
-### Step 1: Clone the Repository
-Make sure you have **Git** installed on your system. Open your terminal and run:
-```bash
-git clone https://github.com/Rishiraj8/house_prediction.git
-cd House
+```
+├── backend/
+│   ├── app.py           # Flask API routes
+│   ├── models.py        # SQLAlchemy database models
+│   ├── model/
+│   │   ├── house_price_model.pkl
+│   │   └── scaler.pkl
+│   └── notebook/
+│       └── train_model.ipynb
+├── frontend/
+│   └── src/
+│       ├── pages/
+│       │   ├── LoginPage.jsx
+│       │   ├── HomePage.jsx
+│       │   ├── DashboardPage.jsx
+│       │   └── MapPage.jsx
+│       └── components/
+│           ├── PredictionForm.jsx
+│           ├── PredictionResult.jsx
+│           ├── AnalyticsChart.jsx
+│           ├── AreaComparison.jsx
+│           └── PropertyMap.jsx
 ```
 
----
+## Setup
 
-### Step 2: Set Up the Backend
+**Backend:**
+```bash
+cd backend
+venv\Scripts\activate
+python app.py
+```
 
-1. Navigate to the backend folder:
-   ```bash
-   cd backend
-   ```
+**Frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-2. Create and activate a Python virtual environment (optional but recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows, use venv\Scripts\activate
-   ```
+Open `http://localhost:5173` in your browser.
 
-3. Install the required Python dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Future Improvements
 
-4. Start the Flask server:
-   ```bash
-   python app.py
-   ```
-   - The Flask server will now run on `http://127.0.0.1:5000` (localhost).
-   - Keep this terminal running.
-
----
-
-### Step 3: Set Up the Frontend
-
-1. Open a new terminal and navigate to the frontend folder:
-   ```bash
-   cd frontend
-   ```
-
-2. Install the required Node.js dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the React development server:
-   ```bash
-   npm run dev
-   ```
-   - The React app will now run on `http://127.0.0.1:5173` (localhost).
-   - Keep this terminal running.
-
----
-
-### Step 4: Use the Application
-
-1. Open your browser and go to `http://127.0.0.1:5173`.
-2. Enter the required details in the form (e.g., number of bedrooms, bathrooms, etc.).
-3. Click the **Predict Price** button.
-4. The predicted house price will be displayed on the screen.
-
----
-
-## Notes
-
-- Ensure both the Flask backend and React frontend are running simultaneously.
-- If you encounter issues, check the terminal logs for errors.
-- You can modify the machine learning model or retrain it using the Jupyter notebook in the `notebook/` folder.
-
----
-
-
-### Model Description
-
-1. **Dataset**:
-   - The model was trained using a dataset (`house_data.csv`) containing features related to house properties and their respective prices.
-
-2. **Features Used**:
-   - **Number of bedrooms**
-   - **Number of bathrooms**
-   - **Living area** (in square feet)
-   - **Condition of the house** (scaled from 1 to 5)
-   - **Number of schools nearby**
-
-3. **Target Variable**:
-   - **Price**: The dependent variable representing the house price.
-
-4. **Data Preprocessing**:
-   - The feature variables were scaled using **`StandardScaler`** to normalize the data. This ensures that features with varying magnitudes do not disproportionately influence the model.
-
-5. **Model Used**:
-   - **Random Forest Regressor**: A machine learning ensemble model that uses multiple decision trees to predict the target variable.
-     - **Key Parameters**:
-       - `n_estimators=100`: The model uses 100 decision trees for making predictions.
-       - `random_state=42`: Ensures reproducibility of results.
-     - **Why Random Forest**:
-       - Handles non-linear relationships well.
-       - Resistant to overfitting when tuned properly.
-       - Capable of handling feature importance, making it suitable for regression tasks like house price prediction.
-
-6. **Model Evaluation**:
-   - **R² Score (Coefficient of Determination)**:
-     - Training R² Score: Measures how well the model fits the training data.
-     - Testing R² Score: Indicates the model's predictive performance on unseen data.
-
-7. **Model Saving**:
-   - The trained model (`house_price_model.pkl`) and the scaler (`scaler.pkl`) were serialized and saved for future use. These files are located in the `backend\model` directory.
-
----
-
-
-## Acknowledgments
-
-This project was developed as a final year project for a school friend of mine.
+- Location-aware ML model using encoded Bangalore localities
+- Dynamic color-coded map markers by price range
+- Expanded dataset with more property features
+- Mobile responsive design
+- MongoDB integration for richer data storage
