@@ -23,7 +23,7 @@ const areaData = [
     }
 ];
 
-const AreaComparison = ({ lightMode }) => {
+const AreaComparison = ({ lightMode, predictions }) => {
     return (
         <div style={{
             marginTop: '40px',
@@ -50,7 +50,7 @@ const AreaComparison = ({ lightMode }) => {
                 <thead>
                     <tr>
                         <th style={{ padding: '12px', color: lightMode ? '#006400' : '#00ffff' }}>Area</th>
-                        <th style={{ padding: '12px', color: lightMode ? '#006400' : '#00ffff' }}>Average Price</th>
+                        <th style={{ padding: '12px', color: lightMode ? '#006400' : '#00ffff' }}>Estimated Price</th>
                         <th style={{ padding: '12px', color: lightMode ? '#006400' : '#00ffff' }}>Market Trend</th>
                     </tr>
                 </thead>
@@ -59,7 +59,11 @@ const AreaComparison = ({ lightMode }) => {
                     {areaData.map((item, index) => (
                         <tr key={index}>
                             <td style={{ padding: '12px' }}>{item.area}</td>
-                            <td style={{ padding: '12px' }}>{item.price}</td>
+                            <td style={{ padding: '12px' }}>
+                                {predictions && predictions[item.area]
+                                    ? `Rs.${parseFloat(predictions[item.area]).toFixed(2)} Lakhs`
+                                    : item.price}
+                            </td>
                             <td style={{ padding: '12px' }}>{item.trend}</td>
                         </tr>
                     ))}

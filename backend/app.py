@@ -65,6 +65,21 @@ def predict():
         'predicted_price': float(prediction)
     })
 
+@app.route('/predict/area', methods=['POST'])
+@login_required
+def predict_area():
+    data = request.json
+    features = np.array([[
+        data['bhk'],
+        data['sqft'],
+        data['bath']
+    ]])
+    scaled_features = scaler.transform(features)
+    prediction = model.predict(scaled_features)[0]
+    return jsonify({
+        'predicted_price': float(prediction)
+    })
+
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
